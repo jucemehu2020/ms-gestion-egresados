@@ -10,45 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T17:37:28-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-03-17T22:07:33-0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
 )
 @Component
 public class EmpresaMapperImpl implements EmpresaMapper {
-
-    @Override
-    public EmpresaSaveDto toDto(Empresa entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        EmpresaSaveDtoBuilder empresaSaveDto = EmpresaSaveDto.builder();
-
-        empresaSaveDto.cargo( entity.getCargo() );
-        empresaSaveDto.correo( entity.getCorreo() );
-        empresaSaveDto.estado( entity.getEstado() );
-        empresaSaveDto.id( entity.getId() );
-        empresaSaveDto.jefeDirecto( entity.getJefeDirecto() );
-        empresaSaveDto.nombre( entity.getNombre() );
-        empresaSaveDto.telefono( entity.getTelefono() );
-        empresaSaveDto.ubicacion( entity.getUbicacion() );
-
-        return empresaSaveDto.build();
-    }
-
-    @Override
-    public List<EmpresaSaveDto> toDtoList(List<Empresa> entities) {
-        if ( entities == null ) {
-            return null;
-        }
-
-        List<EmpresaSaveDto> list = new ArrayList<EmpresaSaveDto>( entities.size() );
-        for ( Empresa empresa : entities ) {
-            list.add( toDto( empresa ) );
-        }
-
-        return list;
-    }
 
     @Override
     public Empresa toEntity(EmpresaSaveDto dto) {
@@ -58,16 +24,36 @@ public class EmpresaMapperImpl implements EmpresaMapper {
 
         Empresa empresa = new Empresa();
 
+        empresa.setId( dto.getId() );
+        empresa.setNombre( dto.getNombre() );
+        empresa.setUbicacion( dto.getUbicacion() );
         empresa.setCargo( dto.getCargo() );
+        empresa.setJefeDirecto( dto.getJefeDirecto() );
+        empresa.setTelefono( dto.getTelefono() );
         empresa.setCorreo( dto.getCorreo() );
         empresa.setEstado( dto.getEstado() );
-        empresa.setId( dto.getId() );
-        empresa.setJefeDirecto( dto.getJefeDirecto() );
-        empresa.setNombre( dto.getNombre() );
-        empresa.setTelefono( dto.getTelefono() );
-        empresa.setUbicacion( dto.getUbicacion() );
 
         return empresa;
+    }
+
+    @Override
+    public EmpresaSaveDto toDto(Empresa entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        EmpresaSaveDtoBuilder empresaSaveDto = EmpresaSaveDto.builder();
+
+        empresaSaveDto.id( entity.getId() );
+        empresaSaveDto.nombre( entity.getNombre() );
+        empresaSaveDto.ubicacion( entity.getUbicacion() );
+        empresaSaveDto.cargo( entity.getCargo() );
+        empresaSaveDto.jefeDirecto( entity.getJefeDirecto() );
+        empresaSaveDto.telefono( entity.getTelefono() );
+        empresaSaveDto.correo( entity.getCorreo() );
+        empresaSaveDto.estado( entity.getEstado() );
+
+        return empresaSaveDto.build();
     }
 
     @Override
@@ -79,6 +65,20 @@ public class EmpresaMapperImpl implements EmpresaMapper {
         List<Empresa> list = new ArrayList<Empresa>( dtos.size() );
         for ( EmpresaSaveDto empresaSaveDto : dtos ) {
             list.add( toEntity( empresaSaveDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<EmpresaSaveDto> toDtoList(List<Empresa> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<EmpresaSaveDto> list = new ArrayList<EmpresaSaveDto>( entities.size() );
+        for ( Empresa empresa : entities ) {
+            list.add( toDto( empresa ) );
         }
 
         return list;
