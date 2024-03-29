@@ -10,7 +10,6 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @Builder
 public class EmpresaSaveDto {
-    @NotNull
     private Long id;
 
     @NotBlank

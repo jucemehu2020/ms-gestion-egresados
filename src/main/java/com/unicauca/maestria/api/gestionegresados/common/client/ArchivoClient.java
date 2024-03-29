@@ -10,7 +10,7 @@ import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.InformacionEstudianteResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.InformacionGeneralResponseDto;
 
-@FeignClient(name = "msv-estudiante-docente", url = "https://ms-gestion-docentes-estudiantes-main.onrender.com")
+@FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082")
 public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/")

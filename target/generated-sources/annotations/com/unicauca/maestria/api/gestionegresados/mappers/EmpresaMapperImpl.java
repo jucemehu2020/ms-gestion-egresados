@@ -10,8 +10,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-17T22:47:11-0500",
-    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.6 (Oracle Corporation)"
+    date = "2024-03-25T21:38:56-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class EmpresaMapperImpl implements EmpresaMapper {
@@ -24,14 +24,14 @@ public class EmpresaMapperImpl implements EmpresaMapper {
 
         Empresa empresa = new Empresa();
 
-        empresa.setId( dto.getId() );
-        empresa.setNombre( dto.getNombre() );
-        empresa.setUbicacion( dto.getUbicacion() );
         empresa.setCargo( dto.getCargo() );
-        empresa.setJefeDirecto( dto.getJefeDirecto() );
-        empresa.setTelefono( dto.getTelefono() );
         empresa.setCorreo( dto.getCorreo() );
         empresa.setEstado( dto.getEstado() );
+        empresa.setId( dto.getId() );
+        empresa.setJefeDirecto( dto.getJefeDirecto() );
+        empresa.setNombre( dto.getNombre() );
+        empresa.setTelefono( dto.getTelefono() );
+        empresa.setUbicacion( dto.getUbicacion() );
 
         return empresa;
     }
@@ -44,14 +44,14 @@ public class EmpresaMapperImpl implements EmpresaMapper {
 
         EmpresaSaveDtoBuilder empresaSaveDto = EmpresaSaveDto.builder();
 
-        empresaSaveDto.id( entity.getId() );
-        empresaSaveDto.nombre( entity.getNombre() );
-        empresaSaveDto.ubicacion( entity.getUbicacion() );
         empresaSaveDto.cargo( entity.getCargo() );
-        empresaSaveDto.jefeDirecto( entity.getJefeDirecto() );
-        empresaSaveDto.telefono( entity.getTelefono() );
         empresaSaveDto.correo( entity.getCorreo() );
         empresaSaveDto.estado( entity.getEstado() );
+        empresaSaveDto.id( entity.getId() );
+        empresaSaveDto.jefeDirecto( entity.getJefeDirecto() );
+        empresaSaveDto.nombre( entity.getNombre() );
+        empresaSaveDto.telefono( entity.getTelefono() );
+        empresaSaveDto.ubicacion( entity.getUbicacion() );
 
         return empresaSaveDto.build();
     }

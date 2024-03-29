@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class CursoSaveDto {
-    @NotNull
     private Long id;
 
     @NotBlank
