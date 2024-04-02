@@ -10,28 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-25T21:38:56-0500",
+    date = "2024-04-02T16:12:25-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class CursoMapperImpl implements CursoMapper {
-
-    @Override
-    public Curso toEntity(CursoSaveDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        Curso curso = new Curso();
-
-        curso.setFechaFin( dto.getFechaFin() );
-        curso.setFechaInicio( dto.getFechaInicio() );
-        curso.setId( dto.getId() );
-        curso.setNombre( dto.getNombre() );
-        curso.setOrientadoA( dto.getOrientadoA() );
-
-        return curso;
-    }
 
     @Override
     public CursoSaveDto toDto(Curso entity) {
@@ -51,20 +34,6 @@ public class CursoMapperImpl implements CursoMapper {
     }
 
     @Override
-    public List<Curso> toEntityList(List<CursoSaveDto> dtos) {
-        if ( dtos == null ) {
-            return null;
-        }
-
-        List<Curso> list = new ArrayList<Curso>( dtos.size() );
-        for ( CursoSaveDto cursoSaveDto : dtos ) {
-            list.add( toEntity( cursoSaveDto ) );
-        }
-
-        return list;
-    }
-
-    @Override
     public List<CursoSaveDto> toDtoList(List<Curso> entities) {
         if ( entities == null ) {
             return null;
@@ -73,6 +42,37 @@ public class CursoMapperImpl implements CursoMapper {
         List<CursoSaveDto> list = new ArrayList<CursoSaveDto>( entities.size() );
         for ( Curso curso : entities ) {
             list.add( toDto( curso ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Curso toEntity(CursoSaveDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        Curso curso = new Curso();
+
+        curso.setFechaFin( dto.getFechaFin() );
+        curso.setFechaInicio( dto.getFechaInicio() );
+        curso.setId( dto.getId() );
+        curso.setNombre( dto.getNombre() );
+        curso.setOrientadoA( dto.getOrientadoA() );
+
+        return curso;
+    }
+
+    @Override
+    public List<Curso> toEntityList(List<CursoSaveDto> dtos) {
+        if ( dtos == null ) {
+            return null;
+        }
+
+        List<Curso> list = new ArrayList<Curso>( dtos.size() );
+        for ( CursoSaveDto cursoSaveDto : dtos ) {
+            list.add( toEntity( cursoSaveDto ) );
         }
 
         return list;

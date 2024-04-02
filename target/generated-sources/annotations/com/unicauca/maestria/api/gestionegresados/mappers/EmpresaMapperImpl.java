@@ -10,31 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-03-25T21:38:56-0500",
+    date = "2024-04-02T16:23:33-0500",
     comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class EmpresaMapperImpl implements EmpresaMapper {
-
-    @Override
-    public Empresa toEntity(EmpresaSaveDto dto) {
-        if ( dto == null ) {
-            return null;
-        }
-
-        Empresa empresa = new Empresa();
-
-        empresa.setCargo( dto.getCargo() );
-        empresa.setCorreo( dto.getCorreo() );
-        empresa.setEstado( dto.getEstado() );
-        empresa.setId( dto.getId() );
-        empresa.setJefeDirecto( dto.getJefeDirecto() );
-        empresa.setNombre( dto.getNombre() );
-        empresa.setTelefono( dto.getTelefono() );
-        empresa.setUbicacion( dto.getUbicacion() );
-
-        return empresa;
-    }
 
     @Override
     public EmpresaSaveDto toDto(Empresa entity) {
@@ -57,20 +37,6 @@ public class EmpresaMapperImpl implements EmpresaMapper {
     }
 
     @Override
-    public List<Empresa> toEntityList(List<EmpresaSaveDto> dtos) {
-        if ( dtos == null ) {
-            return null;
-        }
-
-        List<Empresa> list = new ArrayList<Empresa>( dtos.size() );
-        for ( EmpresaSaveDto empresaSaveDto : dtos ) {
-            list.add( toEntity( empresaSaveDto ) );
-        }
-
-        return list;
-    }
-
-    @Override
     public List<EmpresaSaveDto> toDtoList(List<Empresa> entities) {
         if ( entities == null ) {
             return null;
@@ -79,6 +45,40 @@ public class EmpresaMapperImpl implements EmpresaMapper {
         List<EmpresaSaveDto> list = new ArrayList<EmpresaSaveDto>( entities.size() );
         for ( Empresa empresa : entities ) {
             list.add( toDto( empresa ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public Empresa toEntity(EmpresaSaveDto dto) {
+        if ( dto == null ) {
+            return null;
+        }
+
+        Empresa empresa = new Empresa();
+
+        empresa.setCargo( dto.getCargo() );
+        empresa.setCorreo( dto.getCorreo() );
+        empresa.setEstado( dto.getEstado() );
+        empresa.setId( dto.getId() );
+        empresa.setJefeDirecto( dto.getJefeDirecto() );
+        empresa.setNombre( dto.getNombre() );
+        empresa.setTelefono( dto.getTelefono() );
+        empresa.setUbicacion( dto.getUbicacion() );
+
+        return empresa;
+    }
+
+    @Override
+    public List<Empresa> toEntityList(List<EmpresaSaveDto> dtos) {
+        if ( dtos == null ) {
+            return null;
+        }
+
+        List<Empresa> list = new ArrayList<Empresa>( dtos.size() );
+        for ( EmpresaSaveDto empresaSaveDto : dtos ) {
+            list.add( toEntity( empresaSaveDto ) );
         }
 
         return list;

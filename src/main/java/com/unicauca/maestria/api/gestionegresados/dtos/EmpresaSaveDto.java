@@ -12,6 +12,9 @@ import javax.validation.constraints.NotBlank;
 public class EmpresaSaveDto {
     private Long id;
 
+    @NotNull
+    private Long idEstudiante;
+
     @NotBlank
     private String nombre;
 

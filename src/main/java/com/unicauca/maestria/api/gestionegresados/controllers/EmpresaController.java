@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestionegresados.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -7,12 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import com.unicauca.maestria.api.gestionegresados.dtos.CursoSaveDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaService;
 
@@ -42,4 +40,17 @@ public class EmpresaController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(empresaService.actualizar(id, examenValoracion, result));
     }
+
+    @GetMapping
+    public ResponseEntity<List<EmpresaSaveDto>> listar() {
+        return ResponseEntity.status(HttpStatus.OK).body(empresaService.listar());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        empresaService.eliminar(id);
+        return ResponseEntity.ok().build();
+    }
+
+
 }

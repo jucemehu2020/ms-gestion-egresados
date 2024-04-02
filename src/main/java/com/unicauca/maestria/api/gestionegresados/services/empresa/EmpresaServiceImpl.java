@@ -1,21 +1,29 @@
 package com.unicauca.maestria.api.gestionegresados.services.empresa;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
+import com.unicauca.maestria.api.gestionegresados.domain.Curso;
 import com.unicauca.maestria.api.gestionegresados.domain.Empresa;
+import com.unicauca.maestria.api.gestionegresados.domain.estudiante.Estudiante;
+import com.unicauca.maestria.api.gestionegresados.dtos.CursoSaveDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestionegresados.mappers.EmpresaMapper;
 import com.unicauca.maestria.api.gestionegresados.repositories.EmpresaRepository;
+import com.unicauca.maestria.api.gestionegresados.repositories.estudiante.EstudianteRepository;
 
 @Service
 @RequiredArgsConstructor
 public class EmpresaServiceImpl implements EmpresaService {
 
+    private final EstudianteRepository estudianteRepository;
     private final EmpresaRepository empresaRepository;
     private final EmpresaMapper empresaMapper;
 
@@ -26,7 +34,16 @@ public class EmpresaServiceImpl implements EmpresaService {
             throw new FieldErrorException(result);
         }
 
-        Empresa cursoRes = empresaRepository.save(empresaMapper.toEntity(empresaDto));
+        // Obtener el estudiante
+        Estudiante estudianteBD = estudianteRepository.findById(empresaDto.getIdEstudiante())
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
+                                "Estudiante con id: " + empresaDto.getIdEstudiante() + " No encontrado"));
+
+        Empresa empresaTmp = empresaMapper.toEntity(empresaDto);
+        empresaTmp.setEstudiante(estudianteBD);
+
+        Empresa cursoRes = empresaRepository.save(empresaTmp);
         return empresaMapper.toDto(cursoRes);
     }
 
@@ -49,6 +66,23 @@ public class EmpresaServiceImpl implements EmpresaService {
             responseEmpresa = empresaRepository.save(empresaTmp);
         }
         return empresaMapper.toDto(responseEmpresa);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmpresaSaveDto> listar() {
+        return empresaMapper.toDtoList(this.empresaRepository.findAll());
+    }
+
+    @Override
+    @Transactional
+    public void eliminar(Long id) {
+        empresaRepository.findById(id)
+                .orElseThrow(
+                        () -> new ResourceNotFoundException(
+                                "Empresa con id: " + id + " no encontrado"));
+        empresaRepository.deleteById(id);
+
     }
 
     // Funciones privadas

@@ -17,6 +17,9 @@ import lombok.NoArgsConstructor;
 public class CursoSaveDto {
     private Long id;
 
+    @NotNull
+    private Long idEstudiante;
+
     @NotBlank
     private String nombre;
 
@@ -28,4 +31,6 @@ public class CursoSaveDto {
 
     @NotNull
     private LocalDate fechaFin;
+
+
 }

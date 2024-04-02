@@ -1,5 +1,7 @@
 package com.unicauca.maestria.api.gestionegresados.controllers;
 
+import java.util.List;
+
 import javax.validation.Valid;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,5 +40,16 @@ public class CursoController {
             @Valid @RequestBody CursoSaveDto examenValoracion, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(cursoService.actualizar(id, examenValoracion, result));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<CursoSaveDto>> listar() {
+        return ResponseEntity.status(HttpStatus.OK).body(cursoService.listar());
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<?> eliminar(@PathVariable Long id) {
+        cursoService.eliminar(id);
+        return ResponseEntity.ok().build();
     }
 }
