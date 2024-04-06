@@ -3,6 +3,7 @@ package com.unicauca.maestria.api.gestionegresados.services.empresa;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -83,6 +84,16 @@ public class EmpresaServiceImpl implements EmpresaService {
                                 "Empresa con id: " + id + " no encontrado"));
         empresaRepository.deleteById(id);
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EmpresaSaveDto> listarEmpresas(Long idEstudiante) {
+        List<Empresa> empresa = empresaRepository.findByEstudianteId(idEstudiante);
+
+        return empresa.stream()
+                .map(empresaMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     // Funciones privadas

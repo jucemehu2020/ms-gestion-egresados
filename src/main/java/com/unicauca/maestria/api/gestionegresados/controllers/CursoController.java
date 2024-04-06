@@ -42,9 +42,9 @@ public class CursoController {
                 .body(cursoService.actualizar(id, examenValoracion, result));
     }
 
-    @GetMapping
-    public ResponseEntity<List<CursoSaveDto>> listar() {
-        return ResponseEntity.status(HttpStatus.OK).body(cursoService.listar());
+    @GetMapping("listarCursos/{id}")
+    public ResponseEntity<List<CursoSaveDto>> listar(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(cursoService.listar(id));
     }
 
     @DeleteMapping("{id}")

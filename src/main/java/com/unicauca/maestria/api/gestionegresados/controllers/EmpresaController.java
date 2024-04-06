@@ -52,5 +52,9 @@ public class EmpresaController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("listarEmpresa/{id}")
+    public ResponseEntity<List<EmpresaSaveDto>> listarEmpresas(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.OK).body(empresaService.listarEmpresas(id));
+    }
 
 }

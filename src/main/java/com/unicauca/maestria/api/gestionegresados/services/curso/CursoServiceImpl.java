@@ -2,7 +2,9 @@ package com.unicauca.maestria.api.gestionegresados.services.curso;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,8 +71,12 @@ public class CursoServiceImpl implements CursoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CursoSaveDto> listar() {
-        return cursoMapper.toDtoList(this.cursoRepository.findAll());
+    public List<CursoSaveDto> listar(Long idEstudiante) {
+        List<Curso> cursos = cursoRepository.findByEstudianteId(idEstudiante);
+
+        return cursos.stream()
+                .map(cursoMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

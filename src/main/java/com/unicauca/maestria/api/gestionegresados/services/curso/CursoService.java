@@ -14,7 +14,7 @@ public interface CursoService {
 
     public CursoSaveDto actualizar(Long id, CursoSaveDto examenValoracionDto, BindingResult result);
 
-    public List<CursoSaveDto> listar();
+    public List<CursoSaveDto> listar(Long id);
 
     public void eliminar(Long id);
 }

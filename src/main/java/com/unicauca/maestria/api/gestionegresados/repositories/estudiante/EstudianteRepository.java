@@ -13,4 +13,5 @@ public interface EstudianteRepository extends JpaRepository<Estudiante, Long>{
 	@Query("SELECT e FROM Estudiante e join e.persona p WHERE "
 			+ "e.correoUniversidad = ?1")
 	public Estudiante obtenerEstudiantePorCorreo(String correo);
+
 }

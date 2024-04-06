@@ -10,42 +10,11 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-04-02T16:12:25-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.37.0.v20240206-1609, environment: Java 17.0.10 (Eclipse Adoptium)"
+    date = "2024-04-06T17:04:35-0500",
+    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.38.0.v20240325-1403, environment: Java 17.0.10 (Eclipse Adoptium)"
 )
 @Component
 public class CursoMapperImpl implements CursoMapper {
-
-    @Override
-    public CursoSaveDto toDto(Curso entity) {
-        if ( entity == null ) {
-            return null;
-        }
-
-        CursoSaveDtoBuilder cursoSaveDto = CursoSaveDto.builder();
-
-        cursoSaveDto.fechaFin( entity.getFechaFin() );
-        cursoSaveDto.fechaInicio( entity.getFechaInicio() );
-        cursoSaveDto.id( entity.getId() );
-        cursoSaveDto.nombre( entity.getNombre() );
-        cursoSaveDto.orientadoA( entity.getOrientadoA() );
-
-        return cursoSaveDto.build();
-    }
-
-    @Override
-    public List<CursoSaveDto> toDtoList(List<Curso> entities) {
-        if ( entities == null ) {
-            return null;
-        }
-
-        List<CursoSaveDto> list = new ArrayList<CursoSaveDto>( entities.size() );
-        for ( Curso curso : entities ) {
-            list.add( toDto( curso ) );
-        }
-
-        return list;
-    }
 
     @Override
     public Curso toEntity(CursoSaveDto dto) {
@@ -65,6 +34,23 @@ public class CursoMapperImpl implements CursoMapper {
     }
 
     @Override
+    public CursoSaveDto toDto(Curso entity) {
+        if ( entity == null ) {
+            return null;
+        }
+
+        CursoSaveDtoBuilder cursoSaveDto = CursoSaveDto.builder();
+
+        cursoSaveDto.fechaFin( entity.getFechaFin() );
+        cursoSaveDto.fechaInicio( entity.getFechaInicio() );
+        cursoSaveDto.id( entity.getId() );
+        cursoSaveDto.nombre( entity.getNombre() );
+        cursoSaveDto.orientadoA( entity.getOrientadoA() );
+
+        return cursoSaveDto.build();
+    }
+
+    @Override
     public List<Curso> toEntityList(List<CursoSaveDto> dtos) {
         if ( dtos == null ) {
             return null;
@@ -73,6 +59,20 @@ public class CursoMapperImpl implements CursoMapper {
         List<Curso> list = new ArrayList<Curso>( dtos.size() );
         for ( CursoSaveDto cursoSaveDto : dtos ) {
             list.add( toEntity( cursoSaveDto ) );
+        }
+
+        return list;
+    }
+
+    @Override
+    public List<CursoSaveDto> toDtoList(List<Curso> entities) {
+        if ( entities == null ) {
+            return null;
+        }
+
+        List<CursoSaveDto> list = new ArrayList<CursoSaveDto>( entities.size() );
+        for ( Curso curso : entities ) {
+            list.add( toDto( curso ) );
         }
 
         return list;
