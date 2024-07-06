@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.dtos;
+package com.unicauca.maestria.api.gestionegresados.dtos.empresa;
 
 import lombok.*;
 import javax.validation.constraints.NotNull;

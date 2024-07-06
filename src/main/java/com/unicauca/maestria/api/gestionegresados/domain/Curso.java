@@ -2,24 +2,22 @@ package com.unicauca.maestria.api.gestionegresados.domain;
 
 import java.time.LocalDate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.unicauca.maestria.api.gestionegresados.domain.estudiante.Estudiante;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Entity
+@Getter
+@Setter
 @Table(name = "cursos")
 public class Curso {
 
@@ -35,7 +33,7 @@ public class Curso {
 
     private LocalDate fechaFin;
 
-    @ManyToOne
-    @JoinColumn(name = "id_estudiante")
-    private Estudiante estudiante;
+    @Column(name = "id_estudiante")
+    private Long idEstudiante;
+
 }

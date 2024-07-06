@@ -14,17 +14,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InformacionEstudianteResponseDto {
+public class InformacionEstudiantesResponseDto {
 
-    @NotNull
+    private Long id;
     private TipoIdentificacion tipoIdentificacion;
-
-    @NotNull
     private Long identificacion;
-
-    @NotBlank
     private String nombre;
-
-    @NotBlank
     private String apellido;
 }

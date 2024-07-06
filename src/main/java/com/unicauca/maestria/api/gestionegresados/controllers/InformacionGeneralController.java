@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestionegresados.dtos.InformacionEstudianteResponseDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.InformacionEstudiantesResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.InformacionGeneralResponseDto;
 import com.unicauca.maestria.api.gestionegresados.services.informacion_general.InformacionGeneralService;
 
@@ -24,7 +24,7 @@ public class InformacionGeneralController {
     private final InformacionGeneralService informacionGeneralService;
 
     @GetMapping("/")
-    public ResponseEntity<List<EstudianteResponseDto>> obtenerEstudiantes() {
+    public ResponseEntity<List<InformacionEstudiantesResponseDto>> obtenerEstudiantes() {
         return ResponseEntity.status(HttpStatus.OK).body(informacionGeneralService.obtenerEstudiantes());
     }
 

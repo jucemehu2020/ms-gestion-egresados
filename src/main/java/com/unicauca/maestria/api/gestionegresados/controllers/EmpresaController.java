@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestionegresados.dtos.CursoSaveDto;
-import com.unicauca.maestria.api.gestionegresados.dtos.EmpresaSaveDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursoSaveDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaResponseDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaService;
 
 @RequiredArgsConstructor
@@ -23,38 +24,38 @@ public class EmpresaController {
     private final EmpresaService empresaService;
 
     @PostMapping
-    public ResponseEntity<EmpresaSaveDto> crear(@Valid @RequestBody EmpresaSaveDto examenValoracion,
+    public ResponseEntity<EmpresaResponseDto> crear(@Valid @RequestBody EmpresaSaveDto examenValoracion,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(empresaService.crear(examenValoracion, result));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EmpresaSaveDto> buscarPorId(@PathVariable Long id) {
+    public ResponseEntity<EmpresaResponseDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(empresaService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EmpresaSaveDto> actualizar(@PathVariable Long id,
+    public ResponseEntity<EmpresaResponseDto> actualizar(@PathVariable Long id,
             @Valid @RequestBody EmpresaSaveDto examenValoracion, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(empresaService.actualizar(id, examenValoracion, result));
     }
 
-    @GetMapping
-    public ResponseEntity<List<EmpresaSaveDto>> listar() {
-        return ResponseEntity.status(HttpStatus.OK).body(empresaService.listar());
-    }
+    // @GetMapping
+    // public ResponseEntity<List<EmpresaResponseDto>> listar() {
+    //     return ResponseEntity.status(HttpStatus.OK).body(empresaService.listar());
+    // }
 
-    @DeleteMapping("{id}")
-    public ResponseEntity<?> eliminar(@PathVariable Long id) {
-        empresaService.eliminar(id);
-        return ResponseEntity.ok().build();
-    }
+    // @DeleteMapping("{id}")
+    // public ResponseEntity<?> eliminar(@PathVariable Long id) {
+    //     empresaService.eliminar(id);
+    //     return ResponseEntity.ok().build();
+    // }
 
-    @GetMapping("listarEmpresa/{id}")
-    public ResponseEntity<List<EmpresaSaveDto>> listarEmpresas(@PathVariable Long id) {
-        return ResponseEntity.status(HttpStatus.OK).body(empresaService.listarEmpresas(id));
+    @GetMapping("listarEmpresas/{idEstudiante}")
+    public ResponseEntity<List<EmpresaResponseDto>> listarEmpresasEstudiante(@PathVariable Long idEstudiante) {
+        return ResponseEntity.status(HttpStatus.OK).body(empresaService.listarEmpresasEstudiante(idEstudiante));
     }
 
 }

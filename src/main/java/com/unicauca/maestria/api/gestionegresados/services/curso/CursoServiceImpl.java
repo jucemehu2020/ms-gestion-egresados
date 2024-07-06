@@ -2,7 +2,6 @@ package com.unicauca.maestria.api.gestionegresados.services.curso;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,73 +9,87 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestionegresados.dtos.CursoSaveDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.ListadoAsignaturasDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursoSaveDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursosResponseDto;
 import com.unicauca.maestria.api.gestionegresados.exceptions.FieldErrorException;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoMapper;
+import com.unicauca.maestria.api.gestionegresados.mappers.CursoResponseMapper;
 import com.unicauca.maestria.api.gestionegresados.repositories.CursoRepository;
-import com.unicauca.maestria.api.gestionegresados.repositories.estudiante.EstudianteRepository;
+import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClient;
+import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClientAsignaturas;
 import com.unicauca.maestria.api.gestionegresados.domain.Curso;
-import com.unicauca.maestria.api.gestionegresados.domain.estudiante.Estudiante;
 
 @Service
 @RequiredArgsConstructor
 public class CursoServiceImpl implements CursoService {
 
-    private final EstudianteRepository estudianteRepository;
     private final CursoRepository cursoRepository;
     private final CursoMapper cursoMapper;
+    private final CursoResponseMapper cursoResponseMapper;
+
+    private final ArchivoClient archivoClient;
+    private final ArchivoClientAsignaturas archivoClientAsignaturas;
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ListadoAsignaturasDto> listarCursosExistentes() {
+        List<ListadoAsignaturasDto> cursosRegistrados = archivoClientAsignaturas.listarAsignaturas();
+        return cursosRegistrados;
+    }
 
     @Override
     @Transactional
-    public CursoSaveDto crear(CursoSaveDto cursoDto, BindingResult result) {
+    public CursosResponseDto crear(CursoSaveDto cursoDto, BindingResult result) {
 
         if (result.hasErrors()) {
             throw new FieldErrorException(result);
         }
 
-        // Obtener el estudiante
-        Estudiante estudianteBD = estudianteRepository.findById(cursoDto.getIdEstudiante())
-                .orElseThrow(
-                        () -> new ResourceNotFoundException(
-                                "Estudiante con id: " + cursoDto.getIdEstudiante() + " No encontrado"));
+        EstudianteResponseDto informacionEstudiante = archivoClient
+                .obtenerPorIdEstudiante(cursoDto.getIdEstudiante());
+
+        ListadoAsignaturasDto informacionCurso = archivoClientAsignaturas.listarAsignaturaPorId(cursoDto.getIdCurso());
 
         Curso cursoTmp = cursoMapper.toEntity(cursoDto);
-        cursoTmp.setEstudiante(estudianteBD);
+        cursoTmp.setIdEstudiante(informacionEstudiante.getId());
+        cursoTmp.setNombre(informacionCurso.getNombreAsignatura());
 
         Curso cursoRes = cursoRepository.save(cursoTmp);
-        return cursoMapper.toDto(cursoRes);
+        return cursoResponseMapper.toDto(cursoRes);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public CursoSaveDto buscarPorId(Long idCurso) {
+    public CursosResponseDto obtenerInformacionCurso(Long idCurso) {
         return cursoRepository.findById(idCurso)
-                .map(cursoMapper::toDto)
+                .map(cursoResponseMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Curso con id: " + idCurso + " no encontrado"));
+                        "Curso con id " + idCurso + " no encontrado"));
     }
 
     @Override
-    public CursoSaveDto actualizar(Long id, CursoSaveDto cursoDto, BindingResult result) {
+    @Transactional(readOnly = true)
+    public List<CursosResponseDto> listarCursosDictados(Long idEstudiante) {
+        List<Curso> cursos = cursoRepository.findByEstudianteId(idEstudiante);
+
+        return cursos.stream()
+                .map(cursoResponseMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CursosResponseDto actualizar(Long id, CursoSaveDto cursoDto, BindingResult result) {
         Curso cursoTmp = cursoRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException("Examen de valoracion con id: " + id + " no encontrado"));
+                () -> new ResourceNotFoundException("Curso con id " + id + " no encontrado"));
         Curso responseCurso = null;
         if (cursoTmp != null) {
             updateCurso(cursoTmp, cursoDto);
             responseCurso = cursoRepository.save(cursoTmp);
         }
-        return cursoMapper.toDto(responseCurso);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<CursoSaveDto> listar(Long idEstudiante) {
-        List<Curso> cursos = cursoRepository.findByEstudianteId(idEstudiante);
-
-        return cursos.stream()
-                .map(cursoMapper::toDto)
-                .collect(Collectors.toList());
+        return cursoResponseMapper.toDto(responseCurso);
     }
 
     @Override
@@ -92,9 +105,13 @@ public class CursoServiceImpl implements CursoService {
 
     // Funciones privadas
     private void updateCurso(Curso curso, CursoSaveDto cursoDto) {
-        curso.setNombre(cursoDto.getNombre());
+
+        // Busca el curso
+        ListadoAsignaturasDto informacionCurso = archivoClientAsignaturas.listarAsignaturaPorId(cursoDto.getIdCurso());
+
+        curso.setNombre(informacionCurso.getNombreAsignatura());
         curso.setOrientadoA(cursoDto.getOrientadoA());
-        curso.setFechaInicio(curso.getFechaInicio());
+        curso.setFechaInicio(cursoDto.getFechaInicio());
         curso.setFechaFin(cursoDto.getFechaFin());
     }
 }

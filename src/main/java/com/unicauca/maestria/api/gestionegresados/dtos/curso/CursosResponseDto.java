@@ -1,9 +1,6 @@
-package com.unicauca.maestria.api.gestionegresados.dtos;
+package com.unicauca.maestria.api.gestionegresados.dtos.curso;
 
 import java.time.LocalDate;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,23 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CursoSaveDto {
+public class CursosResponseDto {
+
     private Long id;
-
-    @NotNull
-    private Long idEstudiante;
-
-    @NotBlank
     private String nombre;
-
-    @NotBlank
     private String orientadoA;
-
-    @NotNull
     private LocalDate fechaInicio;
-
-    @NotNull
     private LocalDate fechaFin;
-
-
 }
