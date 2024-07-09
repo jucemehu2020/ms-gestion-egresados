@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
-import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursoSaveDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaService;

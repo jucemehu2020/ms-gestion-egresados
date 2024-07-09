@@ -18,7 +18,7 @@ import lombok.*;
 @Entity
 @Getter
 @Setter
-@Table(name = "cursos")
+@Table(name = "cursos_dictados")
 public class Curso {
 
     @Id
