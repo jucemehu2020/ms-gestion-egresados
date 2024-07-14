@@ -14,6 +14,7 @@ import com.unicauca.maestria.api.gestionegresados.dtos.ListadoAsignaturasDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursoSaveDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursosResponseDto;
 import com.unicauca.maestria.api.gestionegresados.exceptions.FieldErrorException;
+import com.unicauca.maestria.api.gestionegresados.exceptions.InformationException;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoMapper;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoResponseMapper;
@@ -37,6 +38,9 @@ public class CursoServiceImpl implements CursoService {
     @Transactional(readOnly = true)
     public List<ListadoAsignaturasDto> listarCursosExistentes() {
         List<ListadoAsignaturasDto> cursosRegistrados = archivoClientAsignaturas.listarAsignaturas();
+        if (cursosRegistrados.isEmpty()) {
+            throw new InformationException("No hay cursos registrados");
+        }
         return cursosRegistrados;
     }
 
@@ -73,6 +77,8 @@ public class CursoServiceImpl implements CursoService {
     @Override
     @Transactional(readOnly = true)
     public List<CursosResponseDto> listarCursosDictados(Long idEstudiante) {
+        archivoClient.obtenerPorIdEstudiante(idEstudiante);
+
         List<Curso> cursos = cursoRepository.findByEstudianteId(idEstudiante);
 
         return cursos.stream()
@@ -82,9 +88,17 @@ public class CursoServiceImpl implements CursoService {
 
     @Override
     public CursosResponseDto actualizar(Long id, CursoSaveDto cursoDto, BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new FieldErrorException(result);
+        }
+
+        archivoClient.obtenerPorIdEstudiante(cursoDto.getIdEstudiante());
+
         Curso cursoTmp = cursoRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Curso con id " + id + " no encontrado"));
         Curso responseCurso = null;
+        
         if (cursoTmp != null) {
             updateCurso(cursoTmp, cursoDto);
             responseCurso = cursoRepository.save(cursoTmp);
@@ -103,7 +117,6 @@ public class CursoServiceImpl implements CursoService {
 
     }
 
-    // Funciones privadas
     private void updateCurso(Curso curso, CursoSaveDto cursoDto) {
 
         // Busca el curso

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-09T00:22:33-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.39.0.v20240620-1855, environment: Java 17.0.11 (Eclipse Adoptium)"
+    date = "2024-07-14T03:09:58-0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
 public class EmpresaResponseMapperImpl implements EmpresaResponseMapper {
@@ -25,14 +25,14 @@ public class EmpresaResponseMapperImpl implements EmpresaResponseMapper {
 
         EmpresaBuilder empresa = Empresa.builder();
 
+        empresa.id( dto.getId() );
+        empresa.nombre( dto.getNombre() );
+        empresa.ubicacion( dto.getUbicacion() );
         empresa.cargo( dto.getCargo() );
+        empresa.jefeDirecto( dto.getJefeDirecto() );
+        empresa.telefono( dto.getTelefono() );
         empresa.correo( dto.getCorreo() );
         empresa.estado( dto.getEstado() );
-        empresa.id( dto.getId() );
-        empresa.jefeDirecto( dto.getJefeDirecto() );
-        empresa.nombre( dto.getNombre() );
-        empresa.telefono( dto.getTelefono() );
-        empresa.ubicacion( dto.getUbicacion() );
 
         return empresa.build();
     }
@@ -45,14 +45,14 @@ public class EmpresaResponseMapperImpl implements EmpresaResponseMapper {
 
         EmpresaResponseDtoBuilder empresaResponseDto = EmpresaResponseDto.builder();
 
+        empresaResponseDto.id( entity.getId() );
+        empresaResponseDto.nombre( entity.getNombre() );
+        empresaResponseDto.ubicacion( entity.getUbicacion() );
         empresaResponseDto.cargo( entity.getCargo() );
+        empresaResponseDto.jefeDirecto( entity.getJefeDirecto() );
+        empresaResponseDto.telefono( entity.getTelefono() );
         empresaResponseDto.correo( entity.getCorreo() );
         empresaResponseDto.estado( entity.getEstado() );
-        empresaResponseDto.id( entity.getId() );
-        empresaResponseDto.jefeDirecto( entity.getJefeDirecto() );
-        empresaResponseDto.nombre( entity.getNombre() );
-        empresaResponseDto.telefono( entity.getTelefono() );
-        empresaResponseDto.ubicacion( entity.getUbicacion() );
 
         return empresaResponseDto.build();
     }

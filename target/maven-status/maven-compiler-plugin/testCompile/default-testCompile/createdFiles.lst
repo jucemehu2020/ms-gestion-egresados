@@ -1,1 +1,10 @@
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Cursos\Estudiante\ListarCursosDictadosTest.class
 com\unicauca\maestria\api\gestionegresados\msgestionegresados\MsGestionEgresadosApplicationTests.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Empresas\Estudiante\ListarInformacionEmpresaTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Cursos\Estudiante\ListarInformacionCursoTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Cursos\Estudiante\ListarCursosTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Cursos\Estudiante\ActualizarCursoTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Empresas\Estudiante\ActualizarEmpresaTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Empresas\Estudiante\ListarEmpresasTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Cursos\Estudiante\RegistrarCursoTest.class
+com\unicauca\maestria\api\gestionegresados\msgestionegresados\Empresas\Estudiante\RegistrarEmpresaTest.class

@@ -11,8 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2024-07-09T00:22:33-0500",
-    comments = "version: 1.4.2.Final, compiler: Eclipse JDT (IDE) 3.39.0.v20240620-1855, environment: Java 17.0.11 (Eclipse Adoptium)"
+    date = "2024-07-14T03:09:58-0500",
+    comments = "version: 1.4.2.Final, compiler: javac, environment: Java 17.0.10 (Oracle Corporation)"
 )
 @Component
 public class CursoMapperImpl implements CursoMapper {
@@ -25,10 +25,10 @@ public class CursoMapperImpl implements CursoMapper {
 
         CursoBuilder curso = Curso.builder();
 
-        curso.fechaFin( dto.getFechaFin() );
-        curso.fechaInicio( dto.getFechaInicio() );
-        curso.idEstudiante( dto.getIdEstudiante() );
         curso.orientadoA( dto.getOrientadoA() );
+        curso.fechaInicio( dto.getFechaInicio() );
+        curso.fechaFin( dto.getFechaFin() );
+        curso.idEstudiante( dto.getIdEstudiante() );
 
         return curso.build();
     }
@@ -41,10 +41,10 @@ public class CursoMapperImpl implements CursoMapper {
 
         CursoSaveDtoBuilder cursoSaveDto = CursoSaveDto.builder();
 
-        cursoSaveDto.fechaFin( entity.getFechaFin() );
-        cursoSaveDto.fechaInicio( entity.getFechaInicio() );
         cursoSaveDto.idEstudiante( entity.getIdEstudiante() );
         cursoSaveDto.orientadoA( entity.getOrientadoA() );
+        cursoSaveDto.fechaInicio( entity.getFechaInicio() );
+        cursoSaveDto.fechaFin( entity.getFechaFin() );
 
         return cursoSaveDto.build();
     }

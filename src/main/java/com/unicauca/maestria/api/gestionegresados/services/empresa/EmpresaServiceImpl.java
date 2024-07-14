@@ -59,6 +59,13 @@ public class EmpresaServiceImpl implements EmpresaService {
 
     @Override
     public EmpresaResponseDto actualizar(Long id, EmpresaSaveDto empresaDto, BindingResult result) {
+
+        if (result.hasErrors()) {
+            throw new FieldErrorException(result);
+        }
+
+        archivoClient.obtenerPorIdEstudiante(empresaDto.getIdEstudiante());
+
         Empresa empresaTmp = empresaRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Empresa con id " + id + " no encontrado"));
         Empresa responseEmpresa = null;
@@ -69,26 +76,11 @@ public class EmpresaServiceImpl implements EmpresaService {
         return empresaResponseMapper.toDto(responseEmpresa);
     }
 
-    // @Override
-    // @Transactional(readOnly = true)
-    // public List<EmpresaResponseDto> listar() {
-    //     return empresaResponseMapper.toDtoList(this.empresaRepository.findAll());
-    // }
-
-    // @Override
-    // @Transactional
-    // public void eliminar(Long id) {
-    //     empresaRepository.findById(id)
-    //             .orElseThrow(
-    //                     () -> new ResourceNotFoundException(
-    //                             "Empresa con id: " + id + " no encontrado"));
-    //     empresaRepository.deleteById(id);
-
-    // }
-
     @Override
     @Transactional(readOnly = true)
     public List<EmpresaResponseDto> listarEmpresasEstudiante(Long idEstudiante) {
+        archivoClient.obtenerPorIdEstudiante(idEstudiante);
+
         List<Empresa> empresa = empresaRepository.findByEstudianteId(idEstudiante);
 
         return empresa.stream()
