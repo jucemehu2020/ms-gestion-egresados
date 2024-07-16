@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Cursos.Estudiante;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Estudiante.Cursos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;

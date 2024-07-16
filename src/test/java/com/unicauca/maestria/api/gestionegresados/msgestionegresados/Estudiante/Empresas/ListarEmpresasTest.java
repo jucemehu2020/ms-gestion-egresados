@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Empresas.Estudiante;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Estudiante.Empresas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,7 @@ import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaServic
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionEmpresaTest {
+public class ListarEmpresasTest {
     @Mock
     private EmpresaRepository empresaRepository;
     @Mock
@@ -54,9 +55,9 @@ public class ListarInformacionEmpresaTest {
     }
 
     @Test
-    void ListarInformacionEmpresaTest_ListadoExitoso() {
+    void ListarEmpresasTest_ListadoExitoso() {
 
-        Long idEmpresa = 1L;
+        Long idEstudiante = 1L;
 
         Empresa empresa = new Empresa();
         empresa.setId(1L);
@@ -69,7 +70,10 @@ public class ListarInformacionEmpresaTest {
         empresa.setCorreo("julio@gse.com.co");
         empresa.setEstado("Activo");
 
-        when(empresaRepository.findById(idEmpresa)).thenReturn(Optional.of(empresa));
+        List<Empresa> listaEmpresa = new ArrayList<>();
+        listaEmpresa.add(empresa);
+
+        when(empresaRepository.findByEstudianteId(idEstudiante)).thenReturn(listaEmpresa);
 
         EmpresaResponseDto empresaResponseDto = new EmpresaResponseDto();
         empresaResponseDto.setId(empresa.getId());
@@ -81,33 +85,30 @@ public class ListarInformacionEmpresaTest {
         empresaResponseDto.setCorreo(empresa.getCorreo());
         empresaResponseDto.setEstado(empresa.getEstado());
 
+        List<EmpresaResponseDto> listaRetorno = new ArrayList<>();
+        listaRetorno.add(empresaResponseDto);
+
         when(empresaResponseMapper.toDto(empresa)).thenReturn(empresaResponseDto);
 
-        EmpresaResponseDto resultado = empresaServiceImpl.buscarPorId(idEmpresa);
+        List<EmpresaResponseDto> resultado = empresaServiceImpl.listarEmpresasEstudiante(idEstudiante);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
-        assertEquals("GSE", resultado.getNombre());
-        assertEquals("Bogota", resultado.getUbicacion());
-        assertEquals("Desarrollador Junior", resultado.getCargo());
-        assertEquals("Juan M.", resultado.getJefeDirecto());
-        assertEquals("31674832734", resultado.getTelefono());
-        assertEquals("julio@gse.com.co", resultado.getCorreo());
-        assertEquals("Activo", resultado.getEstado());
+        assertEquals(listaRetorno, resultado);
     }
 
     @Test
-    void ListarInformacionEmpresaTest_EmpresaNoExiste() {
-        Long idEmpresa = 2L;
+    void ListarEmpresasTest_NoExisteEstudiante() {
+        Long idEstudiante = 2L;
 
-        when(empresaRepository.findById(idEmpresa)).thenReturn(Optional.empty());
+        when(archivoClient.obtenerPorIdEstudiante(idEstudiante))
+                .thenThrow(new ResourceNotFoundException("Estudiantes con id " + idEstudiante + " no encontrado"));
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            empresaServiceImpl.buscarPorId(idEmpresa);
+            empresaServiceImpl.listarEmpresasEstudiante(idEstudiante);
         });
 
         assertNotNull(exception.getMessage());
-        String expectedMessage = "Empresa con id 2 no encontrada";
+        String expectedMessage = "Estudiantes con id 2 no encontrado";
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
 

@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Empresas.Estudiante;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Coordinador.Empresas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,7 +30,7 @@ import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaServic
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarEmpresasTest {
+public class ListarEmpresasEstudianteTest {
     @Mock
     private EmpresaRepository empresaRepository;
     @Mock

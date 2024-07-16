@@ -1,6 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Cursos.Estudiante;
-
-import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursosResponseDto;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Estudiante.Cursos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -10,7 +8,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,11 +19,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClientAsignaturas;
 import com.unicauca.maestria.api.gestionegresados.domain.Curso;
+import com.unicauca.maestria.api.gestionegresados.dtos.curso.CursosResponseDto;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoMapper;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoResponseMapper;
@@ -33,7 +32,7 @@ import com.unicauca.maestria.api.gestionegresados.services.curso.CursoServiceImp
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class ListarInformacionCursoTest {
+public class ListarCursosDictadosTest {
     @Mock
     private CursoRepository cursoRepository;
     @Mock
@@ -44,8 +43,6 @@ public class ListarInformacionCursoTest {
     private ArchivoClient archivoClient;
     @Mock
     private ArchivoClientAsignaturas archivoClientAsignaturas;
-    @Mock
-    private BindingResult result;
     @InjectMocks
     private CursoServiceImpl cursoServiceImpl;
 
@@ -61,9 +58,9 @@ public class ListarInformacionCursoTest {
     }
 
     @Test
-    void ListarInformacionCursoTest_ListarExitoso() {
+    void ListarCursosDictadosTest_ListadoExitoso() {
 
-        Long idCurso = 1L;
+        Long idEstudiante = 1L;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -74,7 +71,10 @@ public class ListarInformacionCursoTest {
         curso.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
         curso.setFechaFin(LocalDate.parse("2018-06-01", formatter));
 
-        when(cursoRepository.findById(idCurso)).thenReturn(Optional.of(curso));
+        List<Curso> cursos = new ArrayList<>();
+        cursos.add(curso);
+
+        when(cursoRepository.findByEstudianteId(idEstudiante)).thenReturn(cursos);
 
         CursosResponseDto cursosResponseDto = new CursosResponseDto();
         cursosResponseDto.setId(curso.getId());
@@ -83,30 +83,31 @@ public class ListarInformacionCursoTest {
         cursosResponseDto.setFechaInicio(curso.getFechaInicio());
         cursosResponseDto.setFechaFin(curso.getFechaFin());
 
+        List<CursosResponseDto> listaRetorno = new ArrayList<>();
+        listaRetorno.add(cursosResponseDto);
+
         when(cursoResponseMapper.toDto(curso)).thenReturn(cursosResponseDto);
 
-        CursosResponseDto resultado = cursoServiceImpl.obtenerInformacionCurso(idCurso);
+        List<CursosResponseDto> resultado = cursoServiceImpl.listarCursosDictados(idEstudiante);
 
         assertNotNull(resultado);
-        assertEquals(1L, resultado.getId());
-        assertEquals("Proyecto I", resultado.getNombre());
-        assertEquals("Pre-grado", resultado.getOrientadoA());
-        assertEquals(LocalDate.parse("2018-02-01", formatter), resultado.getFechaInicio());
-        assertEquals(LocalDate.parse("2018-06-01", formatter), resultado.getFechaFin());
+        assertEquals(listaRetorno, resultado);
     }
 
     @Test
-    void ListarInformacionCursoTest_CursoNoExiste() {
-        Long idCurso = 2L;
+    void ListarCursosDictadosTest_NoExisteEstudiante() {
+        Long idEstudiante = 2L;
 
-        when(cursoRepository.findById(idCurso)).thenReturn(Optional.empty());
+        when(archivoClient.obtenerPorIdEstudiante(idEstudiante))
+                .thenThrow(new ResourceNotFoundException("Estudiantes con id " + idEstudiante + " no encontrado"));
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            cursoServiceImpl.obtenerInformacionCurso(idCurso);
+            cursoServiceImpl.listarCursosDictados(idEstudiante);
         });
 
         assertNotNull(exception.getMessage());
-        String expectedMessage = "Curso con id 2 no encontrado";
+        String expectedMessage = "Estudiantes con id 2 no encontrado";
         assertTrue(exception.getMessage().contains(expectedMessage));
     }
+
 }

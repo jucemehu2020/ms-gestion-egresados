@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Empresas.Estudiante;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Estudiante.Empresas;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +36,7 @@ import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaServic
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class RegistrarEmpresaTest {
+public class ActualizarEmpresaTest {
     @Mock
     private EmpresaRepository empresaRepository;
     @Mock
@@ -60,13 +61,15 @@ public class RegistrarEmpresaTest {
     }
 
     @Test
-    void RegistrarEmpresaTest_RegistroExitoso() {
+    void ActualizarEmpresaTest_ActualizacionExitosa() {
+
+        Long idEmpresa = 1L;
 
         EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
         empresaSaveDto.setIdEstudiante(1L);
         empresaSaveDto.setNombre("GSE");
         empresaSaveDto.setUbicacion("Bogota");
-        empresaSaveDto.setCargo("Desarrollador Junior");
+        empresaSaveDto.setCargo("Desarrollador Junior Nivel 1");
         empresaSaveDto.setJefeDirecto("Juan M.");
         empresaSaveDto.setTelefono("31674832734");
         empresaSaveDto.setCorreo("julio@gse.com.co");
@@ -79,40 +82,51 @@ public class RegistrarEmpresaTest {
 
         when(archivoClient.obtenerPorIdEstudiante(empresaSaveDto.getIdEstudiante())).thenReturn(estudianteResponseDto);
 
-        Empresa empresa = new Empresa();
-        empresa.setId(1L);
-        empresa.setIdEstudiante(empresaSaveDto.getIdEstudiante());
-        empresa.setNombre(empresaSaveDto.getNombre());
-        empresa.setUbicacion(empresaSaveDto.getUbicacion());
-        empresa.setCargo(empresaSaveDto.getCargo());
-        empresa.setJefeDirecto(empresaSaveDto.getJefeDirecto());
-        empresa.setTelefono(empresaSaveDto.getTelefono());
-        empresa.setCorreo(empresaSaveDto.getCorreo());
-        empresa.setEstado(empresaSaveDto.getEstado());
+        Empresa empresaOld = new Empresa();
+        empresaOld.setId(1L);
+        empresaOld.setIdEstudiante(1L);
+        empresaOld.setNombre("GSE");
+        empresaOld.setUbicacion("Bogota");
+        empresaOld.setCargo("Desarrollador Junior");
+        empresaOld.setJefeDirecto("Juan M.");
+        empresaOld.setTelefono("31674832734");
+        empresaOld.setCorreo("julio@gse.com.co");
+        empresaOld.setEstado("Activo");
 
-        when(empresaMapper.toEntity(empresaSaveDto)).thenReturn(empresa);
+        when(empresaRepository.findById(idEmpresa)).thenReturn(Optional.of(empresaOld));
 
-        when(empresaRepository.save(empresa)).thenReturn(empresa);
+        Empresa empresaNew = new Empresa();
+        empresaNew.setId(empresaOld.getId());
+        empresaNew.setIdEstudiante(empresaSaveDto.getIdEstudiante());
+        empresaNew.setNombre(empresaSaveDto.getNombre());
+        empresaNew.setUbicacion(empresaSaveDto.getUbicacion());
+        empresaNew.setCargo(empresaSaveDto.getCargo());
+        empresaNew.setJefeDirecto(empresaSaveDto.getJefeDirecto());
+        empresaNew.setTelefono(empresaSaveDto.getTelefono());
+        empresaNew.setCorreo(empresaSaveDto.getCorreo());
+        empresaNew.setEstado(empresaSaveDto.getEstado());
+
+        when(empresaRepository.save(empresaOld)).thenReturn(empresaNew);
 
         EmpresaResponseDto empresaResponseDto = new EmpresaResponseDto();
-        empresaResponseDto.setId(empresa.getId());
-        empresaResponseDto.setNombre(empresa.getNombre());
-        empresaResponseDto.setUbicacion(empresa.getUbicacion());
-        empresaResponseDto.setCargo(empresa.getCargo());
-        empresaResponseDto.setJefeDirecto(empresa.getJefeDirecto());
-        empresaResponseDto.setTelefono(empresa.getTelefono());
-        empresaResponseDto.setCorreo(empresa.getCorreo());
-        empresaResponseDto.setEstado(empresa.getEstado());
+        empresaResponseDto.setId(empresaNew.getId());
+        empresaResponseDto.setNombre(empresaNew.getNombre());
+        empresaResponseDto.setUbicacion(empresaNew.getUbicacion());
+        empresaResponseDto.setCargo(empresaNew.getCargo());
+        empresaResponseDto.setJefeDirecto(empresaNew.getJefeDirecto());
+        empresaResponseDto.setTelefono(empresaNew.getTelefono());
+        empresaResponseDto.setCorreo(empresaNew.getCorreo());
+        empresaResponseDto.setEstado(empresaNew.getEstado());
 
-        when(empresaResponseMapper.toDto(empresa)).thenReturn(empresaResponseDto);
+        when(empresaResponseMapper.toDto(empresaNew)).thenReturn(empresaResponseDto);
 
-        EmpresaResponseDto resultado = empresaServiceImpl.crear(empresaSaveDto, result);
+        EmpresaResponseDto resultado = empresaServiceImpl.actualizar(idEmpresa, empresaSaveDto, result);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
         assertEquals("GSE", resultado.getNombre());
         assertEquals("Bogota", resultado.getUbicacion());
-        assertEquals("Desarrollador Junior", resultado.getCargo());
+        assertEquals("Desarrollador Junior Nivel 1", resultado.getCargo());
         assertEquals("Juan M.", resultado.getJefeDirecto());
         assertEquals("31674832734", resultado.getTelefono());
         assertEquals("julio@gse.com.co", resultado.getCorreo());
@@ -121,7 +135,8 @@ public class RegistrarEmpresaTest {
     }
 
     @Test
-    void RegistrarEmpresaTest_FaltanAtributos() {
+    void ActualizarEmpresaTest_FaltanAtributos() {
+        Long idEmpresa = 1L;
 
         EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
         empresaSaveDto.setIdEstudiante(1L);
@@ -138,7 +153,7 @@ public class RegistrarEmpresaTest {
         when(result.getFieldErrors()).thenReturn(List.of(fieldError));
 
         FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-            empresaServiceImpl.crear(empresaSaveDto, result);
+            empresaServiceImpl.actualizar(idEmpresa, empresaSaveDto, result);
         });
 
         assertNotNull(exception.getResult());
@@ -151,7 +166,8 @@ public class RegistrarEmpresaTest {
     }
 
     @Test
-    void RegistrarEmpresaTest_EstudianteNoExiste() {
+    void ActualizarEmpresaTest_EstudianteNoExiste() {
+        Long idEmpresa = 1L;
 
         EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
         empresaSaveDto.setIdEstudiante(4L);
@@ -169,7 +185,7 @@ public class RegistrarEmpresaTest {
                         + empresaSaveDto.getIdEstudiante() + " no encontrado"));
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            empresaServiceImpl.crear(empresaSaveDto, result);
+            empresaServiceImpl.actualizar(idEmpresa, empresaSaveDto, result);
         });
 
         assertNotNull(exception.getMessage());
@@ -178,10 +194,11 @@ public class RegistrarEmpresaTest {
     }
 
     @Test
-    void RegistrarEmpresaTest_ServidorEstudianteCaido() {
+    void ActualizarEmpresaTest_ServidorEstudianteCaido() {
+        Long idEmpresa = 1L;
 
         EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
-        empresaSaveDto.setIdEstudiante(1L);
+        empresaSaveDto.setIdEstudiante(4L);
         empresaSaveDto.setNombre("GSE");
         empresaSaveDto.setUbicacion("Bogota");
         empresaSaveDto.setCargo("Desarrollador Junior");
@@ -197,10 +214,11 @@ public class RegistrarEmpresaTest {
 
         ServiceUnavailableException thrown = assertThrows(
                 ServiceUnavailableException.class,
-                () -> empresaServiceImpl.crear(empresaSaveDto, result),
+                () -> empresaServiceImpl.actualizar(idEmpresa, empresaSaveDto, result),
                 "Servidor externo actualmente fuera de servicio");
 
         assertNotNull(thrown.getMessage());
         assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
     }
+
 }

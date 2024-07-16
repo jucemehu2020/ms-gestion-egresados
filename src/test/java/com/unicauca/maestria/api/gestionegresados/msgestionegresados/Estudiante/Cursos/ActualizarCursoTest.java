@@ -1,4 +1,4 @@
-package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Cursos.Estudiante;
+package com.unicauca.maestria.api.gestionegresados.msgestionegresados.Estudiante.Cursos;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ import com.unicauca.maestria.api.gestionegresados.services.curso.CursoServiceImp
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class RegistrarCursoTest {
+public class ActualizarCursoTest {
     @Mock
     private CursoRepository cursoRepository;
     @Mock
@@ -67,14 +68,16 @@ public class RegistrarCursoTest {
     }
 
     @Test
-    void RegistrarCursoTest_RegistroExitoso() {
+    void ActualizarCursoTest_ActualizacionExitosa() {
+
+        Long idCurso = 1L;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
         cursoSaveDto.setIdEstudiante(1L);
         cursoSaveDto.setIdCurso(1L);
-        cursoSaveDto.setOrientadoA("Pre-grado");
+        cursoSaveDto.setOrientadoA("Posgrado");
         cursoSaveDto.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
         cursoSaveDto.setFechaFin(LocalDate.parse("2018-06-01", formatter));
 
@@ -85,46 +88,56 @@ public class RegistrarCursoTest {
 
         when(archivoClient.obtenerPorIdEstudiante(cursoSaveDto.getIdEstudiante())).thenReturn(estudianteResponseDto);
 
+        Curso cursoOld = new Curso();
+        cursoOld.setId(1L);
+        cursoOld.setIdEstudiante(1L);
+        cursoOld.setOrientadoA("Posgrado");
+        cursoOld.setNombre("Proyecto 1");
+        cursoOld.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
+        cursoOld.setFechaFin(LocalDate.parse("2018-06-01", formatter));
+
+        when(cursoRepository.findById(idCurso)).thenReturn(Optional.of(cursoOld));
+
         ListadoAsignaturasDto listadoAsignaturasDto = new ListadoAsignaturasDto();
         listadoAsignaturasDto.setNombreAsignatura("Proyecto I");
 
         when(archivoClientAsignaturas.listarAsignaturaPorId(cursoSaveDto.getIdCurso()))
                 .thenReturn(listadoAsignaturasDto);
 
-        Curso curso = new Curso();
-        curso.setId(1L);
-        curso.setNombre(listadoAsignaturasDto.getNombreAsignatura());
-        curso.setIdEstudiante(cursoSaveDto.getIdEstudiante());
-        curso.setOrientadoA(cursoSaveDto.getOrientadoA());
-        curso.setFechaInicio(cursoSaveDto.getFechaInicio());
-        curso.setFechaFin(cursoSaveDto.getFechaFin());
+        Curso cursoNew = new Curso();
+        cursoNew.setId(1L);
+        cursoNew.setNombre(listadoAsignaturasDto.getNombreAsignatura());
+        cursoNew.setIdEstudiante(cursoSaveDto.getIdEstudiante());
+        cursoNew.setOrientadoA(cursoSaveDto.getOrientadoA());
+        cursoNew.setFechaInicio(cursoSaveDto.getFechaInicio());
+        cursoNew.setFechaFin(cursoSaveDto.getFechaFin());
 
-        when(cursoMapper.toEntity(cursoSaveDto)).thenReturn(curso);
-
-        when(cursoRepository.save(curso)).thenReturn(curso);
+        when(cursoRepository.save(cursoNew)).thenReturn(cursoNew);
 
         CursosResponseDto cursosResponseDto = new CursosResponseDto();
-        cursosResponseDto.setId(curso.getId());
-        cursosResponseDto.setNombre(curso.getNombre());
-        cursosResponseDto.setOrientadoA(curso.getOrientadoA());
-        cursosResponseDto.setFechaInicio(curso.getFechaInicio());
-        cursosResponseDto.setFechaFin(curso.getFechaFin());
+        cursosResponseDto.setId(cursoNew.getId());
+        cursosResponseDto.setNombre(cursoNew.getNombre());
+        cursosResponseDto.setOrientadoA(cursoNew.getOrientadoA());
+        cursosResponseDto.setFechaInicio(cursoNew.getFechaInicio());
+        cursosResponseDto.setFechaFin(cursoNew.getFechaFin());
 
-        when(cursoResponseMapper.toDto(curso)).thenReturn(cursosResponseDto);
+        when(cursoResponseMapper.toDto(cursoNew)).thenReturn(cursosResponseDto);
 
-        CursosResponseDto resultado = cursoServiceImpl.crear(cursoSaveDto, result);
+        CursosResponseDto resultado = cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result);
 
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
         assertEquals("Proyecto I", resultado.getNombre());
-        assertEquals("Pre-grado", resultado.getOrientadoA());
+        assertEquals("Posgrado", resultado.getOrientadoA());
         assertEquals(LocalDate.parse("2018-02-01", formatter), resultado.getFechaInicio());
         assertEquals(LocalDate.parse("2018-06-01", formatter), resultado.getFechaFin());
 
     }
 
     @Test
-    void RegistrarCursoTest_FaltanAtributos() {
+    void ActualizarCursoTest_FaltanAtributos() {
+        Long idCurso = 1L;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
@@ -139,7 +152,7 @@ public class RegistrarCursoTest {
         when(result.getFieldErrors()).thenReturn(List.of(fieldError));
 
         FieldErrorException exception = assertThrows(FieldErrorException.class, () -> {
-            cursoServiceImpl.crear(cursoSaveDto, result);
+            cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result);
         });
 
         assertNotNull(exception.getResult());
@@ -152,13 +165,15 @@ public class RegistrarCursoTest {
     }
 
     @Test
-    void RegistrarCursoTest_EstudianteNoExiste() {
+    void ActualizarCursoTest_EstudianteNoExiste() {
+        Long idCurso = 1L;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
         cursoSaveDto.setIdEstudiante(4L);
         cursoSaveDto.setIdCurso(1L);
-        cursoSaveDto.setOrientadoA("Pre-grado");
+        cursoSaveDto.setOrientadoA("Postgrado");
         cursoSaveDto.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
         cursoSaveDto.setFechaFin(LocalDate.parse("2018-06-01", formatter));
 
@@ -169,7 +184,7 @@ public class RegistrarCursoTest {
                         + cursoSaveDto.getIdEstudiante() + " no encontrado"));
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            cursoServiceImpl.crear(cursoSaveDto, result);
+            cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result);
         });
 
         assertNotNull(exception.getMessage());
@@ -178,13 +193,15 @@ public class RegistrarCursoTest {
     }
 
     @Test
-    void RegistrarCursoTest_CursoNoExiste() {
+    void ActualizarCursoTest_CursoNoExiste() {
+        Long idCurso = 1L;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
         cursoSaveDto.setIdEstudiante(1L);
         cursoSaveDto.setIdCurso(2L);
-        cursoSaveDto.setOrientadoA("Pre-grado");
+        cursoSaveDto.setOrientadoA("Postgrado");
         cursoSaveDto.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
         cursoSaveDto.setFechaFin(LocalDate.parse("2018-06-01", formatter));
 
@@ -195,12 +212,22 @@ public class RegistrarCursoTest {
 
         when(archivoClient.obtenerPorIdEstudiante(cursoSaveDto.getIdEstudiante())).thenReturn(estudianteResponseDto);
 
+        Curso cursoOld = new Curso();
+        cursoOld.setId(1L);
+        cursoOld.setIdEstudiante(1L);
+        cursoOld.setOrientadoA("Posgrado");
+        cursoOld.setNombre("Proyecto 1");
+        cursoOld.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
+        cursoOld.setFechaFin(LocalDate.parse("2018-06-01", formatter));
+
+        when(cursoRepository.findById(idCurso)).thenReturn(Optional.of(cursoOld));
+
         when(archivoClientAsignaturas.listarAsignaturaPorId(cursoSaveDto.getIdCurso()))
                 .thenThrow(new ResourceNotFoundException("Cursos con id "
                         + cursoSaveDto.getIdCurso() + " no encontrado"));
 
         ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
-            cursoServiceImpl.crear(cursoSaveDto, result);
+            cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result);
         });
 
         assertNotNull(exception.getMessage());
@@ -209,7 +236,9 @@ public class RegistrarCursoTest {
     }
 
     @Test
-    void RegistrarCursoTest_ServidorEstudianteCaido() {
+    void ActualizarCursoTest_ServidorEstudianteCaido() {
+        Long idCurso = 1L;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
@@ -227,7 +256,7 @@ public class RegistrarCursoTest {
 
         ServiceUnavailableException thrown = assertThrows(
                 ServiceUnavailableException.class,
-                () -> cursoServiceImpl.crear(cursoSaveDto, result),
+                () -> cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result),
                 "Servidor externo actualmente fuera de servicio");
 
         assertNotNull(thrown.getMessage());
@@ -235,7 +264,9 @@ public class RegistrarCursoTest {
     }
 
     @Test
-    void RegistrarCursoTest_ServidorCursosCaido() {
+    void ActualizarCursoTest_ServidorCursosCaido() {
+        Long idCurso = 1L;
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         CursoSaveDto cursoSaveDto = new CursoSaveDto();
@@ -252,13 +283,23 @@ public class RegistrarCursoTest {
 
         when(archivoClient.obtenerPorIdEstudiante(cursoSaveDto.getIdEstudiante())).thenReturn(estudianteResponseDto);
 
+        Curso cursoOld = new Curso();
+        cursoOld.setId(1L);
+        cursoOld.setIdEstudiante(1L);
+        cursoOld.setOrientadoA("Posgrado");
+        cursoOld.setNombre("Proyecto 1");
+        cursoOld.setFechaInicio(LocalDate.parse("2018-02-01", formatter));
+        cursoOld.setFechaFin(LocalDate.parse("2018-06-01", formatter));
+
+        when(cursoRepository.findById(idCurso)).thenReturn(Optional.of(cursoOld));
+
         when(archivoClientAsignaturas.listarAsignaturaPorId(cursoSaveDto.getIdCurso()))
                 .thenThrow(new ServiceUnavailableException(
                         "Servidor externo actualmente fuera de servicio"));
 
         ServiceUnavailableException thrown = assertThrows(
                 ServiceUnavailableException.class,
-                () -> cursoServiceImpl.crear(cursoSaveDto, result),
+                () -> cursoServiceImpl.actualizar(idCurso, cursoSaveDto, result),
                 "Servidor externo actualmente fuera de servicio");
 
         assertNotNull(thrown.getMessage());

@@ -11,6 +11,7 @@ import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.InformacionEstudiantesResponseDto;
 import com.unicauca.maestria.api.gestionegresados.dtos.InformacionGeneralResponseDto;
+import com.unicauca.maestria.api.gestionegresados.exceptions.InformationException;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,11 @@ public class InformacionGeneralServiceImpl implements InformacionGeneralService 
     @Transactional(readOnly = true)
     public List<InformacionEstudiantesResponseDto> obtenerEstudiantes() {
         List<EstudianteResponseDto> informacionEstudiantes = archivoClient.obtenerEstudiantes();
+
+        if(informacionEstudiantes.isEmpty()){
+            throw new InformationException("No hay estudiantes registrados");
+        }
+
         List<InformacionEstudiantesResponseDto> estudiantesReducidos = informacionEstudiantes.stream()
                 .map(estudiante -> new InformacionEstudiantesResponseDto(
                         estudiante.getId(),
