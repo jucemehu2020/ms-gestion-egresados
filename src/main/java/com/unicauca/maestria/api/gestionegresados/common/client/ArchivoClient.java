@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
 
-@FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082")
+@FeignClient(name = "msv-estudiante-docente", url = "http://msv-estudiante-docente:8082")
 public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/")
