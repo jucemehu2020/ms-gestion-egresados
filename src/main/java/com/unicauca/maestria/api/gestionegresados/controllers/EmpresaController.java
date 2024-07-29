@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaResponseDto;
@@ -23,6 +24,7 @@ public class EmpresaController {
     private final EmpresaService empresaService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ESTUDIANTE')")
     public ResponseEntity<EmpresaResponseDto> crear(@Valid @RequestBody EmpresaSaveDto examenValoracion,
             BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -30,29 +32,21 @@ public class EmpresaController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ESTUDIANTE')")
     public ResponseEntity<EmpresaResponseDto> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.status(HttpStatus.OK).body(empresaService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ESTUDIANTE')")
     public ResponseEntity<EmpresaResponseDto> actualizar(@PathVariable Long id,
             @Valid @RequestBody EmpresaSaveDto examenValoracion, BindingResult result) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(empresaService.actualizar(id, examenValoracion, result));
     }
 
-    // @GetMapping
-    // public ResponseEntity<List<EmpresaResponseDto>> listar() {
-    //     return ResponseEntity.status(HttpStatus.OK).body(empresaService.listar());
-    // }
-
-    // @DeleteMapping("{id}")
-    // public ResponseEntity<?> eliminar(@PathVariable Long id) {
-    //     empresaService.eliminar(id);
-    //     return ResponseEntity.ok().build();
-    // }
-
-    @GetMapping("listarEmpresas/{idEstudiante}")
+    @GetMapping("/listarEmpresas/{idEstudiante}")
+    // @PreAuthorize("hasRole('ESTUDIANTE') or hasRole('COORDINADOR')")
     public ResponseEntity<List<EmpresaResponseDto>> listarEmpresasEstudiante(@PathVariable Long idEstudiante) {
         return ResponseEntity.status(HttpStatus.OK).body(empresaService.listarEmpresasEstudiante(idEstudiante));
     }
