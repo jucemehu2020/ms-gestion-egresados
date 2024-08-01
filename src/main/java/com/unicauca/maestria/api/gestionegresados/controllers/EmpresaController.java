@@ -16,7 +16,6 @@ import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.services.empresa.EmpresaService;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/empresa")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })

@@ -1,5 +1,12 @@
 package com.unicauca.maestria.api.gestionegresados.exceptions;
 
+import feign.RetryableException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.context.request.WebRequest;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,14 +15,6 @@ import java.util.stream.Stream;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.context.request.WebRequest;
-
-import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-
-import feign.RetryableException;
 
 @ControllerAdvice
 public class GlobalHandlerException {
@@ -81,17 +80,21 @@ public class GlobalHandlerException {
     @ExceptionHandler(value = { InvalidFormatException.class })
     public ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, WebRequest request) {
         HttpStatus estado = HttpStatus.BAD_REQUEST;
-
-        // Convertir los valores del enum a una cadena legible
-        String valoresPermitidos = Stream.of(ex.getTargetType().getEnumConstants())
-                .map(Object::toString)
-                .collect(Collectors.joining(", "));
-
         Map<String, Object> body = new HashMap<>();
-        body.put("message",
-                "Atributo " + ex.getValue() + " no es valido. Los valores aceptados son: " + valoresPermitidos);
         body.put("path", request.getDescription(false).substring(4));
+
+        if (ex.getTargetType().isAssignableFrom(LocalDate.class)) {
+            body.put("message", "Formato de fecha no válido. Use el formato 'yyyy-MM-dd'.");
+        } else {
+            String valoresPermitidos = Stream.of(ex.getTargetType().getEnumConstants())
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+
+            body.put("message",
+                    "Atributo " + ex.getValue() + " no es válido. Los valores aceptados son: " + valoresPermitidos);
+        }
 
         return new ResponseEntity<>(body, estado);
     }
+
 }

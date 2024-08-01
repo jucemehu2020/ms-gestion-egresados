@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.ListadoAsignaturasDto;
 
-@FeignClient(name = "gestion-asignaturas-ms", url = "http://gestion-asignaturas-ms:8021")
+@FeignClient(name = "ms-gestion-asignaturas", url = "http://ms-gestion-asignaturas:8021")
 public interface ArchivoClientAsignaturas {
 
     @GetMapping("/api/asignaturas/")

@@ -135,6 +135,39 @@ public class ActualizarEmpresaTest {
     }
 
     @Test
+    void ActualizarEmpresaTest_EmpresaNoExiste() {
+        Long idEmpresa = 2L;
+
+        EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
+        empresaSaveDto.setIdEstudiante(1L);
+        empresaSaveDto.setNombre("GSE");
+        empresaSaveDto.setUbicacion("Bogota");
+        empresaSaveDto.setCargo("Desarrollador Junior Nivel 1");
+        empresaSaveDto.setJefeDirecto("Juan M.");
+        empresaSaveDto.setTelefono("31674832734");
+        empresaSaveDto.setCorreo("julio@gse.com.co");
+        empresaSaveDto.setEstado("Activo");
+
+        when(result.hasErrors()).thenReturn(false);
+
+        EstudianteResponseDto estudianteResponseDto = new EstudianteResponseDto();
+        estudianteResponseDto.setId(1L);
+
+        when(archivoClient.obtenerPorIdEstudiante(empresaSaveDto.getIdEstudiante())).thenReturn(estudianteResponseDto);
+
+        when(empresaRepository.findById(idEmpresa)).thenReturn(Optional.empty());
+
+        ResourceNotFoundException exception = assertThrows(ResourceNotFoundException.class, () -> {
+            empresaServiceImpl.actualizar(idEmpresa, empresaSaveDto, result);
+        });
+
+        assertNotNull(exception.getMessage());
+        String expectedMessage = "Empresa con id 2 no encontrado";
+        assertTrue(exception.getMessage().contains(expectedMessage));
+
+    }
+
+    @Test
     void ActualizarEmpresaTest_FaltanAtributos() {
         Long idEmpresa = 1L;
 

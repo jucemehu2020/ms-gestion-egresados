@@ -16,7 +16,6 @@ import com.unicauca.maestria.api.gestionegresados.dtos.InformacionGeneralRespons
 import com.unicauca.maestria.api.gestionegresados.services.informacion_general.InformacionGeneralService;
 
 @RequiredArgsConstructor
-@Validated
 @RestController
 @RequestMapping("/api/informacion_general")
 @CrossOrigin(origins = "*", methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT })
