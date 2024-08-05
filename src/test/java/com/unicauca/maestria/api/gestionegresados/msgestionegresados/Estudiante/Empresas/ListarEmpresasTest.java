@@ -22,7 +22,9 @@ import org.springframework.validation.BindingResult;
 import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestionegresados.domain.Empresa;
 import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaResponseDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaSaveDto;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestionegresados.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestionegresados.mappers.EmpresaMapper;
 import com.unicauca.maestria.api.gestionegresados.mappers.EmpresaResponseMapper;
 import com.unicauca.maestria.api.gestionegresados.repositories.EmpresaRepository;
@@ -110,6 +112,32 @@ public class ListarEmpresasTest {
         assertNotNull(exception.getMessage());
         String expectedMessage = "Estudiantes con id 2 no encontrado";
         assertTrue(exception.getMessage().contains(expectedMessage));
+    }
+
+    @Test
+        void ListarEmpresasTest_ServidorEstudianteCaido() {
+        Long idEstudiante = 1L;
+
+        EmpresaSaveDto empresaSaveDto = new EmpresaSaveDto();
+        empresaSaveDto.setIdEstudiante(1L);
+        empresaSaveDto.setNombre("GSE");
+        empresaSaveDto.setUbicacion("Bogota");
+        empresaSaveDto.setCargo("Desarrollador Junior");
+        empresaSaveDto.setTelefono("31674832734");
+        empresaSaveDto.setCorreo("julio@gse.com.co");
+        empresaSaveDto.setEstado("Activo");
+
+        when(archivoClient.obtenerPorIdEstudiante(empresaSaveDto.getIdEstudiante()))
+                .thenThrow(new ServiceUnavailableException(
+                        "Servidor externo actualmente fuera de servicio"));
+
+        ServiceUnavailableException thrown = assertThrows(
+                ServiceUnavailableException.class,
+                () -> empresaServiceImpl.listarEmpresasEstudiante(idEstudiante),
+                "Servidor externo actualmente fuera de servicio");
+
+        assertNotNull(thrown.getMessage());
+        assertTrue(thrown.getMessage().contains("Servidor externo actualmente fuera de servicio"));
     }
 
 }

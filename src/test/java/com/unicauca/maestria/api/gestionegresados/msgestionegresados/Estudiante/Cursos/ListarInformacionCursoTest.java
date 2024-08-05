@@ -26,6 +26,7 @@ import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClient;
 import com.unicauca.maestria.api.gestionegresados.common.client.ArchivoClientAsignaturas;
 import com.unicauca.maestria.api.gestionegresados.domain.Curso;
 import com.unicauca.maestria.api.gestionegresados.exceptions.ResourceNotFoundException;
+import com.unicauca.maestria.api.gestionegresados.exceptions.ServiceUnavailableException;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoMapper;
 import com.unicauca.maestria.api.gestionegresados.mappers.CursoResponseMapper;
 import com.unicauca.maestria.api.gestionegresados.repositories.CursoRepository;
