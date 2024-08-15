@@ -15,9 +15,5 @@ public interface EmpresaService {
 
     public EmpresaResponseDto actualizar(Long id, EmpresaSaveDto examenValoracionDto, BindingResult result);
 
-    // public List<EmpresaResponseDto> listar();
-
-    // public void eliminar(Long id);
-
     public List<EmpresaResponseDto> listarEmpresasEstudiante(Long id);
 }

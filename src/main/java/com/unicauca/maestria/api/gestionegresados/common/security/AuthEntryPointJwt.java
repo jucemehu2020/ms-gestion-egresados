@@ -27,7 +27,6 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 
-		// Create your custom error response
 		String errorResponse = String.format("{\"error\": \"Unauthorized\", \"message\": \"%s\"}",
 				authException.getMessage());
 

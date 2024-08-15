@@ -3,7 +3,6 @@ package com.unicauca.maestria.api.gestionegresados.controllers;
 import java.util.List;
 
 import javax.validation.Valid;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

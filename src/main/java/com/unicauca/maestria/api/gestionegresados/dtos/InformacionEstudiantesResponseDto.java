@@ -1,8 +1,5 @@
 package com.unicauca.maestria.api.gestionegresados.dtos;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 import com.unicauca.maestria.api.gestionegresados.common.enums.estudiante.TipoIdentificacion;
 
 import lombok.AllArgsConstructor;

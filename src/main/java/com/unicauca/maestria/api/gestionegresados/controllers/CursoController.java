@@ -3,7 +3,6 @@ package com.unicauca.maestria.api.gestionegresados.controllers;
 import java.util.List;
 
 import javax.validation.Valid;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.ListadoAsignaturasDto;
@@ -59,9 +58,4 @@ public class CursoController {
                 .body(cursoService.actualizar(id, examenValoracion, result));
     }
 
-    // @DeleteMapping("{id}")
-    // public ResponseEntity<?> eliminar(@PathVariable Long id) {
-    //     cursoService.eliminar(id);
-    //     return ResponseEntity.ok().build();
-    // }
 }

@@ -2,7 +2,6 @@ package com.unicauca.maestria.api.gestionegresados.dtos;
 
 
 import java.time.LocalDate;
-import java.util.List;
 
 import com.unicauca.maestria.api.gestionegresados.domain.embeddables.Caracterizacion;
 import com.unicauca.maestria.api.gestionegresados.domain.embeddables.InformacionMaestriaActual;
