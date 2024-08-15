@@ -31,44 +31,49 @@ public class EmpresaServiceImpl implements EmpresaService {
     private final ArchivoClient archivoClient;
 
     /**
-     * Crea una nueva empresa asociada a un estudiante.
+     * Crea una nueva entidad Empresa asociada a un estudiante.
      *
-     * @param empresaDto Objeto EmpresaSaveDto que contiene los datos de la empresa
-     *                   a crear.
-     * @param result     Objeto BindingResult que contiene los resultados de la
-     *                   validación del formulario.
-     * @return Objeto EmpresaResponseDto con la información de la empresa creada.
-     * @throws FieldErrorException si hay errores de validación en el formulario.
+     * @param empresaDto DTO que contiene la información de la empresa a crear.
+     * @param result     Resultado de la validación del formulario.
+     * @return EmpresaResponseDto que contiene la información de la empresa creada.
+     * @throws FieldErrorException si existen errores en el formulario de entrada.
      */
     @Override
     @Transactional
     public EmpresaResponseDto crear(EmpresaSaveDto empresaDto, BindingResult result) {
+        // Verificar si hay errores de validación en el formulario
         if (result.hasErrors()) {
             throw new FieldErrorException(result);
         }
 
+        // Obtener la información del estudiante asociado a la empresa
         EstudianteResponseDto informacionEstudiante = archivoClient
                 .obtenerPorIdEstudiante(empresaDto.getIdEstudiante());
 
+        // Convertir el DTO de la empresa en una entidad y asociar el estudiante
         Empresa empresaTmp = empresaMapper.toEntity(empresaDto);
         empresaTmp.setIdEstudiante(informacionEstudiante.getId());
 
-        Empresa cursoRes = empresaRepository.save(empresaTmp);
-        return empresaResponseMapper.toDto(cursoRes);
+        // Guardar la empresa en la base de datos
+        Empresa empresaGuardada = empresaRepository.save(empresaTmp);
+
+        // Convertir la entidad guardada en un DTO de respuesta
+        return empresaResponseMapper.toDto(empresaGuardada);
     }
 
     /**
      * Busca una empresa por su ID.
      *
      * @param idEmpresa ID de la empresa a buscar.
-     * @return Objeto EmpresaResponseDto con la información de la empresa
+     * @return EmpresaResponseDto que contiene la información de la empresa
      *         encontrada.
-     * @throws ResourceNotFoundException si no se encuentra la empresa con el ID
-     *                                   proporcionado.
+     * @throws ResourceNotFoundException si la empresa con el ID proporcionado no es
+     *                                   encontrada.
      */
     @Override
     @Transactional(readOnly = true)
     public EmpresaResponseDto buscarPorId(Long idEmpresa) {
+        // Buscar la empresa por su ID en la base de datos y convertirla en un DTO
         return empresaRepository.findById(idEmpresa)
                 .map(empresaResponseMapper::toDto)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -79,61 +84,68 @@ public class EmpresaServiceImpl implements EmpresaService {
      * Actualiza la información de una empresa existente.
      *
      * @param id         ID de la empresa a actualizar.
-     * @param empresaDto Objeto EmpresaSaveDto que contiene los datos de la empresa
-     *                   a actualizar.
-     * @param result     Objeto BindingResult que contiene los resultados de la
-     *                   validación del formulario.
-     * @return Objeto EmpresaResponseDto con la información de la empresa
+     * @param empresaDto DTO que contiene la información actualizada de la empresa.
+     * @param result     Resultado de la validación del formulario.
+     * @return EmpresaResponseDto que contiene la información de la empresa
      *         actualizada.
-     * @throws FieldErrorException       si hay errores de validación en el
-     *                                   formulario.
-     * @throws ResourceNotFoundException si no se encuentra la empresa con el ID
-     *                                   proporcionado.
+     * @throws FieldErrorException       si existen errores en el formulario de
+     *                                   entrada.
+     * @throws ResourceNotFoundException si la empresa con el ID proporcionado no es
+     *                                   encontrada.
      */
     @Override
     public EmpresaResponseDto actualizar(Long id, EmpresaSaveDto empresaDto, BindingResult result) {
-
+        // Verificar si hay errores de validación en el formulario
         if (result.hasErrors()) {
             throw new FieldErrorException(result);
         }
 
+        // Verificar la existencia del estudiante asociado a la empresa
         archivoClient.obtenerPorIdEstudiante(empresaDto.getIdEstudiante());
 
+        // Buscar la empresa en la base de datos por su ID
         Empresa empresaTmp = empresaRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("Empresa con id " + id + " no encontrado"));
 
+        // Actualizar la información de la empresa con los nuevos datos del DTO
         updateEmpresa(empresaTmp, empresaDto);
-        Empresa responseEmpresa = empresaRepository.save(empresaTmp);
 
-        return empresaResponseMapper.toDto(responseEmpresa);
+        // Guardar la empresa actualizada en la base de datos
+        Empresa empresaActualizada = empresaRepository.save(empresaTmp);
+
+        // Convertir la entidad actualizada en un DTO de respuesta
+        return empresaResponseMapper.toDto(empresaActualizada);
     }
 
     /**
-     * Lista las empresas asociadas a un estudiante.
+     * Lista todas las empresas asociadas a un estudiante.
      *
-     * @param idEstudiante ID del estudiante cuyos datos de empresas se desean
-     *                     listar.
-     * @return Una lista de objetos EmpresaResponseDto que representan las empresas
+     * @param idEstudiante ID del estudiante cuyas empresas se listarán.
+     * @return Una lista de EmpresaResponseDto con la información de las empresas
      *         asociadas al estudiante.
+     * @throws ResourceNotFoundException si el estudiante no es encontrado.
      */
     @Override
     @Transactional(readOnly = true)
     public List<EmpresaResponseDto> listarEmpresasEstudiante(Long idEstudiante) {
+        // Verificar la existencia del estudiante
         archivoClient.obtenerPorIdEstudiante(idEstudiante);
 
+        // Buscar todas las empresas asociadas al estudiante en la base de datos
         List<Empresa> empresas = empresaRepository.findByEstudianteId(idEstudiante);
 
+        // Convertir las entidades encontradas en una lista de DTOs de respuesta
         return empresas.stream()
                 .map(empresaResponseMapper::toDto)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Actualiza los detalles de una empresa existente.
+     * Actualiza los detalles de una entidad Empresa.
      *
-     * @param empresa    Entidad Empresa que se desea actualizar.
-     * @param empresaDto Objeto EmpresaSaveDto que contiene los nuevos datos de la
-     *                   empresa.
+     * @param empresa    La entidad Empresa a actualizar.
+     * @param empresaDto DTO que contiene los nuevos valores para la entidad
+     *                   Empresa.
      */
     private void updateEmpresa(Empresa empresa, EmpresaSaveDto empresaDto) {
         empresa.setNombre(empresaDto.getNombre());
