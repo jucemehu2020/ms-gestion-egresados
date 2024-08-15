@@ -7,16 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.unicauca.maestria.api.gestionegresados.dtos.EstudianteResponseDto;
-import com.unicauca.maestria.api.gestionegresados.dtos.InformacionEstudianteResponseDto;
-import com.unicauca.maestria.api.gestionegresados.dtos.InformacionGeneralResponseDto;
 
-@FeignClient(name = "msv-estudiante-docente", url = "http://localhost:8082")
+@FeignClient(name = "ms-estudiante-docente-experto", url = "http://ms-estudiante-docente-expert:8082", configuration = FeignConfig.class)
 public interface ArchivoClient {
 
     @GetMapping("/api/estudiantes/")
     public List<EstudianteResponseDto> obtenerEstudiantes();
 
     @GetMapping("/api/estudiantes/{id}")
-    public InformacionGeneralResponseDto obtenerPorIdEstudiante(@PathVariable Long id);
+    public EstudianteResponseDto obtenerPorIdEstudiante(@PathVariable Long id);
 
 }

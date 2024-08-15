@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-MsGestionEgresadosApplication<ms-gestion-egresados>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.unicauca.maestria.api.gestionegresados.MsGestionEgresadosApplication",
+            "projectName": "ms-gestion-egresados",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -1,14 +1,19 @@
 package com.unicauca.maestria.api.gestionegresados.services.empresa;
 
+import java.util.List;
+
 import org.springframework.validation.BindingResult;
-import com.unicauca.maestria.api.gestionegresados.dtos.EmpresaSaveDto;
+
+import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaResponseDto;
+import com.unicauca.maestria.api.gestionegresados.dtos.empresa.EmpresaSaveDto;
 
 public interface EmpresaService {
 
-    public EmpresaSaveDto crear(EmpresaSaveDto oficio, BindingResult result);
+    public EmpresaResponseDto crear(EmpresaSaveDto oficio, BindingResult result);
 
-    public EmpresaSaveDto buscarPorId(Long idTrabajoGrado);
+    public EmpresaResponseDto buscarPorId(Long idTrabajoGrado);
 
-    public EmpresaSaveDto actualizar(Long id, EmpresaSaveDto examenValoracionDto, BindingResult result);
+    public EmpresaResponseDto actualizar(Long id, EmpresaSaveDto examenValoracionDto, BindingResult result);
 
+    public List<EmpresaResponseDto> listarEmpresasEstudiante(Long id);
 }
